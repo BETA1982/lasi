@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LASI 領導風格問卷</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm, workshop-grade self-assessment; clear and encouraging
+   IDEA: a printed course answer sheet that scores itself
+   PICTURE: the 12-situation form itself, then a 2x2 style quadrant that fills by your answers
+   COLOUR and TYPE: oxford blue band, white panels, magenta for the result; Red Hat Display numerals + Noto Sans TC
+   LAYOUT: one calm column, sticky progress, results band below */
+:root{color-scheme:light dark;
+--bg:light-dark(#eef1f7,#070f26);--panel:light-dark(#fff,#0f1b3d);--ink:light-dark(#121a2e,#e8ecf6);
+--mute:light-dark(#5a6378,#9aa5c0);--line:light-dark(#d9deea,#1f2c52);--band:#0b1f4b;--acc:#e0115f;
+--sel:light-dark(#fde8f0,#3a1030);--s1:#e0115f;--s2:#f08a24;--s3:#2a9d8f;--s4:#3b5bdb}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Noto Sans TC",system-ui,sans-serif;overflow-x:clip}
+.top{background:var(--band);color:#fff;padding:clamp(28px,5vw,56px) max(5vw,16px) clamp(24px,4vw,40px)}
+.wrap{max-width:760px;margin:0 auto}
+h1{font:800 clamp(30px,5vw,44px)/1.1 "Red Hat Display","Noto Sans TC",sans-serif;margin:0 0 4px;text-wrap:balance}
+.en{font:700 15px "Red Hat Display",sans-serif;opacity:.7;margin:0 0 18px}
+.top p{margin:0 0 10px;max-width:62ch;opacity:.92}
+.who{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:18px}
+.who label{font-size:13px;opacity:.8;display:block;margin-bottom:4px}
+.who input{width:100%;font:16px inherit;font-family:inherit;padding:10px 12px;border-radius:8px;border:1px solid #2c4580;background:#13295e;color:#fff;min-height:44px}
+.bar{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:10px max(5vw,16px)}
+.bar .wrap{display:flex;align-items:center;gap:14px}
+.track{flex:1;height:8px;background:var(--line);border-radius:9px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--acc);transition:width .3s}
+.cnt{font:700 15px "Red Hat Display",sans-serif;white-space:nowrap}
+main{padding:24px max(5vw,16px) 40px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 20px 14px;margin:0 0 16px}
+.q.miss{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+.q h2{font-size:17px;font-weight:700;margin:0 0 12px;line-height:1.6}
+.q h2 b{font:800 15px "Red Hat Display",sans-serif;color:var(--acc);margin-right:6px;white-space:nowrap}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;cursor:pointer;min-height:44px;margin-bottom:4px;border:1px solid transparent}
+.opt:hover{background:light-dark(#f4f6fb,#13224a)}
+.opt input{position:absolute;opacity:0}
+.opt .k{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font:700 14px "Red Hat Display",sans-serif;color:var(--mute)}
+.opt:has(input:checked){background:var(--sel);border-color:var(--acc)}
+.opt:has(input:checked) .k{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt:has(input:focus-visible){outline:3px solid var(--acc);outline-offset:2px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+button{font:700 16px "Noto Sans TC",sans-serif;min-height:48px;padding:0 22px;border-radius:10px;border:0;cursor:pointer}
+.pri{background:var(--acc);color:#fff}.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.msg{color:var(--acc);font-weight:700;margin:10px 0 0;min-height:1.6em}
+#res{display:none;background:var(--band);color:#fff;padding:clamp(28px,5vw,56px) max(5vw,16px)}
+#res.on{display:block}
+#res h2{font:800 clamp(26px,4vw,36px)/1.15 "Red Hat Display","Noto Sans TC",sans-serif;margin:0 0 6px}
+#res .sub{opacity:.8;margin:0 0 22px}
+.quad{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:8px}
+.cell{background:#13295e;border-radius:12px;padding:16px;min-height:150px;position:relative;overflow:hidden;border:2px solid transparent}
+.cell.top1{border-color:#fff}
+.cell .lv{position:absolute;left:0;bottom:0;right:0;opacity:.85;transition:height .6s}
+.cell .in{position:relative}
+.cell .nm{font-weight:700;font-size:17px}
+.cell .n{font:800 clamp(34px,6vw,48px)/1 "Red Hat Display",sans-serif;margin-top:6px}
+.cell .n small{font-size:15px;font-weight:700;opacity:.8}
+.cell .d{font-size:13px;opacity:.9;margin-top:6px}
+.axes{display:flex;justify-content:space-between;font-size:13px;opacity:.7;margin-bottom:24px;gap:10px}
+.tbl{width:100%;border-collapse:collapse;background:var(--panel);color:var(--ink);border-radius:12px;overflow:hidden}
+.tbl th,.tbl td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left}
+.tbl th{background:light-dark(#dfe5f2,#16244d);font-size:14px}
+.tbl td.r{text-align:right;font:700 17px "Red Hat Display",sans-serif;white-space:nowrap}
+.tbl .pts{color:var(--mute);font-size:14px}
+.sum{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}
+.chip{flex:1 1 200px;background:#13295e;border-radius:12px;padding:14px 16px}
+.chip span{display:block;font-size:13px;opacity:.75}
+.chip strong{font:800 28px "Red Hat Display","Noto Sans TC",sans-serif}
+.note{font-size:14px;opacity:.8;max-width:66ch}
+#res .sec{color:#fff;border-color:#2c4580}
+@media(max-width:600px){.who{grid-template-columns:1fr}.q{padding:16px 14px 10px}.cell{min-height:130px;padding:12px}.tbl th,.tbl td{padding:10px}.tbl .pts{display:none}}
+@media(prefers-reduced-motion:reduce){.fill,.cell .lv{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <h1>LASI 領導風格問卷</h1>
+  <p class="en">Leader Adaptability and Style Inventory</p>
+  <p>這是一份用來瞭解您的領導型態的問卷，共 12 道題目，每題代表一種狀況。回答前請先仔細考慮：您面對每種狀況時將如何處理？</p>
+  <p>答案沒有好壞之別，請依「實際上」您會怎麼做來回答，而不是理論上該怎麼做。每題單選。</p>
+  <div class="who">
+    <div><label for="nm">姓名</label><input id="nm" autocomplete="name"></div>
+    <div><label for="dt">填寫日期</label><input id="dt" type="date"></div>
+  </div>
+</div></header>
+
+<div class="bar"><div class="wrap"><div class="track"><div class="fill" id="fill"></div></div><span class="cnt" id="cnt">0 / 12</span></div></div>
+
+<main><div class="wrap">
+  <form id="f" novalidate></form>
+  <div class="acts">
+    <button class="pri" id="go" type="button">計算我的領導風格</button>
+    <button class="sec" id="clr" type="button">清除重填</button>
+  </div>
+  <p class="msg" id="msg" role="status"></p>
+</div></main>
+
+<section id="res" aria-live="polite"><div class="wrap">
+  <h2 id="rt">你的領導風格</h2>
+  <p class="sub" id="rs"></p>
+  <div class="quad" id="quad"></div>
+  <div class="axes"><span>← 低指導</span><span>高指導 →</span></div>
+  <table class="tbl"><thead><tr><th>風格</th><th>選擇次數</th><th class="pts">各題計分</th><th>合計</th></tr></thead><tbody id="tb"></tbody></table>
+  <div class="sum" id="sum"></div>
+  <p class="note">選擇次數最多的是你最常使用的領導風格；「合計」是該風格各題的計分加總。適應力總分（全部 12 題計分相加，介於 −24 到 +24）越高，代表你選的做法越貼合下屬當下的狀況。</p>
+  <div class="acts"><button class="sec" id="cp" type="button">複製結果文字</button><button class="sec" id="back" type="button">回到題目修改</button></div>
+  <p class="msg" id="cpm" style="color:#fff"></p>
+</div></section>
+
+<script>
+{
+const Q=[
+["一位新員工，正在接受職前培訓，他很想把事情做好，也非常自信，只是還沒有多少工作方法和經驗。",["指導下屬按標準步驟完成工作。","提出工作要求，也聽聽下屬的建議。","詢問下屬對工作目標的想法，並予以鼓勵和支持。","儘量不干擾他的正常工作。"]],
+["你的下屬經過一段時間的培訓，已基本瞭解自己的工作職責和工作流程，由於實際工作比預想的更為困難，與前一階段相比工作動力明顯下降。",["友善地加強互動，但繼續留心他們的表現。","讓他們按照自己的方式工作。","盡可能做出一些讓他們感覺自己是很重要、且有參與感的安排。","強調工作完成的重要性及期限。"]],
+["你的下屬遇到挑戰性的問題，顯得有些信心不足。過去雖然有類似情況，但在你的鼓勵下多半問題都能自行解決，而且人際關係也很正常。",["加入進來和他們一同解決問題。","讓他們自行處理。","指導他們度過難關。","給予指導性意見，並予以鼓勵。"]],
+["你正計畫做一項日常工作程式的細節調整，而你的下屬在這方面有豐富的經驗，並期待著儘快按新方案實施。",["讓他們來共同參與變革，並適當提供意見。","宣佈變革並嚴密監督。","讓他們自行調整，將結果向你彙報。","聽取他們的意見，但決定權在於你。"]],
+["你剛接任一個工作效率一般的團隊，前任主管經營的生產力較低，你知道團隊成員對你的到來充滿了信任和期待。",["讓他們來決定自己的工作方向與內容。","聽取他們的意見，仍關注其工作是否達成目標。","重新設定目標，指導並監督他們完成任務。","讓他們自己設定目標，並予以支援。"]],
+["幾個月來你的下屬表現一直處於低谷，他們也無所謂是否能達成目標，你想帶領團隊儘快度過困難時期，提升生產力，且使工作環境能更人性化。",["儘量做些使他們感覺很重要並有參與感的安排。","強調按時完成工作的重要性。","儘量不去干擾他們。","聽聽他們的意見，指導並鼓勵他們達成目標。"]],
+["你的下屬建議改變部門內部的架構，而你也認為很有必要；日常工作中下屬擁有足夠的彈性和工作經驗，只是遇到重大問題時他們還缺乏足夠的勇氣。",["細心指導並監督改變。","認可他們的建議，由大家集思廣益進行改變。","聽取他們好的意見，並控制改變的進行。","順其自然，相信他們自己能夠變革成功。"]],
+["你的下屬表現傑出，在團隊內維持良好的人際關係，儘量你很少過問，但常常有令你意想不到的業績出現，偶爾你也感覺到無法掌握他們的工作進度。",["順其自然，由他們自己去完成工作。","跟他們討論，並著手進行需要的改變。","以明確的態度，來批示他們工作的方向。","為避免影響上司與下屬間的關係，不做太多的批示。"]],
+["你的上司指定你負責一個工作團隊，但該工作團隊對工作目標認識不夠清楚，每次會議的效率很低，常常會而不議，議而不決；可是你知道他們想把事情做好，只是缺乏經驗和必要的指導。",["順其自然。","聽取並採納他們的良好建議，同時監督目標的達成。","重新界定目標，指導並監督他們完成工作目標。","讓他們加入進來，共同參與目標的設定。"]],
+["你的下屬，以往對工作都很有責任感，最近由於工作經驗不足而遭受挫折，並對新設定的工作任務敷衍了事。",["讓他們共同參與目標的重新界定。","重新界定工作任務，並細心地督導。","避免施加壓力，造成麻煩。","採用他們的建議，但留心新的目標是否達成。"]],
+["你剛新任一個職位，以前這個職位的主管較少參與下屬的事務；而下屬多數情況下能夠自己處理事務，並保持和諧；面對你佈置的新任務他們顯得有些信心不足。",["以明確的態度來指導他們工作。","讓他們參與決策，並刺激他們作出一些貢獻。","和他們討論過去的表現，並要求他們按新程式工作。","順其自然。"]],
+["最近下屬間有些內在的問題，但他們以前表面很好，過去出現類似的問題常常都能自己解決，且維持很長時期的目標達成。",["試著和他們一起解決問題。","讓他們自己解決自己的問題。","快速地糾正他們。","提供討論的機會，參與解決他們的問題。"]]
+];
+// [計分, 風格] for options A–D, from 表一
+const K=[
+[[2,1],[1,3],[-1,2],[-2,4]],[[2,2],[-2,4],[-1,3],[1,1]],[[1,2],[-1,4],[-2,1],[2,3]],
+[[1,3],[-2,1],[2,4],[-1,2]],[[-2,4],[1,2],[2,1],[-1,3]],[[-1,3],[1,1],[-2,4],[2,2]],
+[[-2,1],[2,3],[1,2],[-1,4]],[[2,4],[-1,2],[-2,1],[1,3]],[[-2,4],[1,2],[2,1],[-1,3]],
+[[-1,3],[1,1],[-2,4],[2,2]],[[-2,1],[2,3],[1,2],[-1,4]],[[-1,2],[2,4],[-2,1],[1,3]]];
+const S={1:["S1 命令式","高指導、低支持：明確告訴對方做什麼、怎麼做","--s1"],2:["S2 教練式","高指導、高支持：說明理由、邊指導邊鼓勵","--s2"],3:["S3 支持式","低指導、高支持：一起討論、陪伴對方做決定","--s3"],4:["S4 授權式","低指導、低支持：放手交辦，由對方負責","--s4"]};
+const L="ABCD",$=id=>document.getElementById(id),f=$("f");
+f.innerHTML=Q.map((q,i)=>`<fieldset class="q" id="q${i}" style="border-style:solid"><legend style="padding:0;float:left;width:100%"><h2><b>狀況 ${i+1}</b>${q[0]}</h2></legend>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="a${i}" value="${j}"><span class="k">${L[j]}</span><span>${o}</span></label>`).join("")}</fieldset>`).join("");
+const ans=()=>Q.map((_,i)=>{const c=f.querySelector(`input[name=a${i}]:checked`);return c?+c.value:null});
+const save=()=>{try{localStorage.setItem("lasi",JSON.stringify({a:ans(),n:$("nm").value,d:$("dt").value}))}catch(e){}};
+const prog=()=>{const n=ans().filter(x=>x!==null).length;$("fill").style.width=n/12*100+"%";$("cnt").textContent=n+" / 12"};
+try{const s=JSON.parse(localStorage.getItem("lasi")||"null");if(s){s.a.forEach((v,i)=>{if(v!==null){const r=f.querySelector(`input[name=a${i}][value="${v}"]`);if(r)r.checked=true}});$("nm").value=s.n||"";$("dt").value=s.d||""}}catch(e){}
+if(!$("dt").value)$("dt").value=new Date().toLocaleDateString("sv");
+prog();
+f.addEventListener("change",e=>{const q=e.target.closest(".q");if(q)q.classList.remove("miss");prog();save()});
+$("nm").addEventListener("input",save);$("dt").addEventListener("change",save);
+let txt="";
+$("go").addEventListener("click",()=>{
+  const a=ans(),miss=a.map((v,i)=>v===null?i:-1).filter(i=>i>=0);
+  document.querySelectorAll(".q").forEach(q=>q.classList.remove("miss"));
+  if(miss.length){miss.forEach(i=>$("q"+i).classList.add("miss"));$("msg").textContent=`還有 ${miss.length} 題未作答：狀況 ${miss.map(i=>i+1).join("、")}`;$("q"+miss[0]).scrollIntoView({behavior:"smooth",block:"center"});return}
+  $("msg").textContent="";
+  const R={1:{n:0,p:[]},2:{n:0,p:[]},3:{n:0,p:[]},4:{n:0,p:[]}};let tot=0;
+  a.forEach((v,i)=>{const[p,s]=K[i][v];R[s].n++;R[s].p.push(p);tot+=p});
+  const sum=s=>R[s].p.reduce((x,y)=>x+y,0),mx=Math.max(...[1,2,3,4].map(s=>R[s].n));
+  const tops=[1,2,3,4].filter(s=>R[s].n===mx);
+  const fmt=v=>(v>0?"+":"")+v;
+  $("rt").textContent=($("nm").value?$("nm").value+"，":"")+"你最常用的是 "+tops.map(s=>S[s][0]).join("、");
+  $("rs").textContent=tops.map(s=>S[s][1]).join("；");
+  $("quad").innerHTML=[3,2,4,1].map(s=>`<div class="cell${tops.includes(s)?" top1":""}"><div class="lv" style="height:${R[s].n/12*100}%;background:var(${S[s][2]})"></div><div class="in"><div class="nm">${S[s][0]}</div><div class="n">${R[s].n}<small> 次</small></div><div class="d">合計 ${fmt(sum(s))} 分</div></div></div>`).join("");
+  $("tb").innerHTML=[1,2,3,4].map(s=>`<tr><td><b>${S[s][0]}</b></td><td class="r">${R[s].n}</td><td class="pts">${R[s].p.map(fmt).join("、")||"—"}</td><td class="r">${fmt(sum(s))}</td></tr>`).join("");
+  $("sum").innerHTML=`<div class="chip"><span>主要風格</span><strong>${tops.map(s=>S[s][0].split(" ")[0]).join("、")}</strong></div><div class="chip"><span>適應力總分（−24 ～ +24）</span><strong>${fmt(tot)}</strong></div>`;
+  txt=`LASI 領導風格問卷結果\n姓名：${$("nm").value||"—"}　日期：${$("dt").value}\n作答：${a.map((v,i)=>(i+1)+L[v]).join(" ")}\n`+[1,2,3,4].map(s=>`${S[s][0]}：${R[s].n} 次，合計 ${fmt(sum(s))}`).join("\n")+`\n主要風格：${tops.map(s=>S[s][0]).join("、")}\n適應力總分：${fmt(tot)}`;
+  $("res").classList.add("on");$("cpm").textContent="";$("res").scrollIntoView({behavior:"smooth"});
+});
+$("clr").addEventListener("click",()=>{if($("clr").dataset.c!=="1"){$("clr").dataset.c="1";$("clr").textContent="再按一次確認清除";setTimeout(()=>{$("clr").dataset.c="";$("clr").textContent="清除重填"},3000);return}
+  f.reset();$("nm").value="";$("clr").dataset.c="";$("clr").textContent="清除重填";$("res").classList.remove("on");$("msg").textContent="";document.querySelectorAll(".q").forEach(q=>q.classList.remove("miss"));prog();save();window.scrollTo({top:0})});
+$("cp").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(txt);$("cpm").textContent="已複製，可貼到 LINE 或筆記。"}catch(e){$("cpm").textContent="無法自動複製，請手動選取上方表格。"}});
+$("back").addEventListener("click",()=>$("q0").scrollIntoView({behavior:"smooth"}));
+}
+</script>
+</body>
+</html>
